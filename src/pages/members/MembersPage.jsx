@@ -55,6 +55,9 @@ const MembersPage = () => {
         setSubscriptionModalOpen,
     ] = useState(false);
 
+    const [fetchLoading, setFetchLoading] =
+        useState(false);
+
     const [
         selectedMember,
         setSelectedMember,
@@ -70,6 +73,8 @@ const MembersPage = () => {
 
     const fetchMembers = async () => {
         try {
+            setFetchLoading(true);
+
             const response =
                 await getMembersApi(
                     currentPage,
@@ -85,6 +90,10 @@ const MembersPage = () => {
             toast.error(
                 "Failed to fetch members"
             );
+
+            setMembers([]);
+        } finally {
+            setFetchLoading(false);
         }
     };
 
@@ -253,25 +262,44 @@ const MembersPage = () => {
                     </thead>
 
                     <tbody>
-                        {members.map((member) => (
-                            <tr
-                                key={member.id}
-                                className="border-b border-slate-100"
-                            >
-                                <td className="px-6 py-4 text-slate-800">
-                                    {member.fullName}
+                        {fetchLoading ? (
+                            <tr>
+                                <td
+                                    colSpan={4}
+                                    className="px-6 py-8 text-center text-slate-500"
+                                >
+                                    Loading members...
                                 </td>
-
-                                <td className="px-6 py-4 text-slate-600">
-                                    {member.email}
+                            </tr>
+                        ) : members.length === 0 ? (
+                            <tr>
+                                <td
+                                    colSpan={4}
+                                    className="px-6 py-8 text-center text-slate-500"
+                                >
+                                    No record found.
                                 </td>
+                            </tr>
+                        ) : (
+                            members.map((member) => (
+                                <tr
+                                    key={member.id}
+                                    className="border-b border-slate-100"
+                                >
+                                    <td className="px-6 py-4 text-slate-800">
+                                        {member.fullName}
+                                    </td>
 
-                                <td className="px-6 py-4 text-slate-600">
-                                    {member.phone}
-                                </td>
+                                    <td className="px-6 py-4 text-slate-600">
+                                        {member.email}
+                                    </td>
 
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
+                                    <td className="px-6 py-4 text-slate-600">
+                                        {member.phone}
+                                    </td>
+
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
                                         <button
                                             onClick={() => {
                                                 setEditingMember(
@@ -311,7 +339,8 @@ const MembersPage = () => {
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        ))
+                        )}
                     </tbody>
                 </table>
 
