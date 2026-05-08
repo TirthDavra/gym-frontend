@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import toast from "react-hot-toast";
@@ -13,7 +13,7 @@ import Button from "../../components/common/Button";
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const [loading, setLoading] =
     useState(false);
@@ -23,6 +23,15 @@ const LoginPage = () => {
       email: "",
       password: "",
     });
+
+  useEffect(() => {
+    const token =
+      localStorage.getItem("token");
+
+    if (token || user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -70,6 +79,18 @@ const LoginPage = () => {
 
           <p className="text-slate-500 mt-2">
             Login to continue
+          </p>
+        </div>
+
+        <div className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+          <p className="text-sm font-semibold text-slate-700 mb-2">
+            Admin Credentials:
+          </p>
+          <p className="text-sm text-slate-600">
+            <span className="font-medium">Email:</span> admin@gmail.com
+          </p>
+          <p className="text-sm text-slate-600">
+            <span className="font-medium">Password:</span> admin123
           </p>
         </div>
 

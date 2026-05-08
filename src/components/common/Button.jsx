@@ -20,6 +20,7 @@ const Button = ({
         transition-all
         disabled:opacity-70
         disabled:cursor-not-allowed
+        cursor-pointer
         ${className}
       `}
       {...props}
